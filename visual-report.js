@@ -307,168 +307,168 @@ class VisualReport {
 <body>
   <div class="container">
     <div class="header">
-      <h1>${this.data.symbol} Trading Psychology Report</h1>
-      <p class="subtitle">Advanced Trading Analysis & Insights</p>
+      <h1>${this.data.symbol} 交易心理分析报告</h1>
+      <p class="subtitle">深度交易分析与洞察</p>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Total Trades</div>
+        <div class="stat-label">总交易次数</div>
         <div class="stat-value">${this.data.totalTrades}</div>
-        <div class="stat-desc">Executed Orders</div>
+        <div class="stat-desc">已执行订单</div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-label">Win Rate</div>
+        <div class="stat-label">胜率</div>
         <div class="stat-value ${parseFloat(this.data.winRate) < 30 ? 'negative' : parseFloat(this.data.winRate) < 50 ? 'warning' : ''}">${this.data.winRate}%</div>
-        <div class="stat-desc">${this.data.wins} Wins / ${this.data.losses} Losses</div>
+        <div class="stat-desc">${this.data.wins} 胜 / ${this.data.losses} 负</div>
         <div class="progress-bar">
           <div class="progress-fill" style="width: ${this.data.winRate}%"></div>
         </div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-label">Total P&L</div>
+        <div class="stat-label">总盈亏</div>
         <div class="stat-value ${parseFloat(this.data.totalPnl) < 0 ? 'negative' : ''}">$${this.data.totalPnl}</div>
-        <div class="stat-desc">${parseFloat(this.data.totalPnl) >= 0 ? 'Profit' : 'Loss'}</div>
+        <div class="stat-desc">${parseFloat(this.data.totalPnl) >= 0 ? '盈利' : '亏损'}</div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-label">Profit Factor</div>
+        <div class="stat-label">盈亏比</div>
         <div class="stat-value ${parseFloat(this.data.profitFactor) < 1 ? 'negative' : parseFloat(this.data.profitFactor) < 2 ? 'warning' : ''}">${this.data.profitFactor}</div>
-        <div class="stat-desc">Avg Win / Avg Loss</div>
+        <div class="stat-desc">平均盈利 / 平均亏损</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Average Win</div>
+        <div class="stat-label">平均盈利</div>
         <div class="stat-value">$${this.data.avgWin}</div>
-        <div class="stat-desc">Per Winning Trade</div>
+        <div class="stat-desc">每笔盈利交易</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Average Loss</div>
+        <div class="stat-label">平均亏损</div>
         <div class="stat-value negative">$${this.data.avgLoss}</div>
-        <div class="stat-desc">Per Losing Trade</div>
+        <div class="stat-desc">每笔亏损交易</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Max Win Streak</div>
+        <div class="stat-label">最大连胜</div>
         <div class="stat-value">${this.data.maxWinStreak}</div>
-        <div class="stat-desc">Consecutive Wins</div>
+        <div class="stat-desc">连续盈利次数</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Max Loss Streak</div>
+        <div class="stat-label">最大连亏</div>
         <div class="stat-value negative">${this.data.maxLossStreak}</div>
-        <div class="stat-desc">Consecutive Losses</div>
+        <div class="stat-desc">连续亏损次数</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Max Drawdown</div>
+        <div class="stat-label">最大回撤</div>
         <div class="stat-value negative">$${this.data.maxDrawdown}</div>
-        <div class="stat-desc">Peak to Trough</div>
+        <div class="stat-desc">峰值到谷底</div>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title">Psychology Metrics</h2>
+      <h2 class="section-title">心理指标</h2>
       <div class="metrics-grid">
         <div class="metric-box">
-          <div class="metric-label">FOMO Trades</div>
+          <div class="metric-label">FOMO 交易</div>
           <div class="metric-value">${this.data.fomoCount}</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">FOMO Win Rate</div>
+          <div class="metric-label">FOMO 胜率</div>
           <div class="metric-value">${this.data.fomoWinRate}%</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Revenge Trades</div>
+          <div class="metric-label">报复性交易</div>
           <div class="metric-value">${this.data.revengeCount}</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Revenge Win Rate</div>
+          <div class="metric-label">报复性胜率</div>
           <div class="metric-value">${this.data.revengeWinRate}%</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Big Losses</div>
+          <div class="metric-label">大额亏损</div>
           <div class="metric-value">${this.data.bigLossCount}</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Avg Stop Loss</div>
+          <div class="metric-label">平均止损点</div>
           <div class="metric-value">${this.data.avgStopLoss}%</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Best Hour</div>
+          <div class="metric-label">最佳时段</div>
           <div class="metric-value">${this.data.bestHour}:00</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Worst Hour</div>
+          <div class="metric-label">最差时段</div>
           <div class="metric-value">${this.data.worstHour}:00</div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title">Holding Time Analysis</h2>
+      <h2 class="section-title">持仓时间分析</h2>
       <div class="metrics-grid">
         <div class="metric-box">
-          <div class="metric-label">Short Term (&lt;1H)</div>
+          <div class="metric-label">短线 (&lt;1小时)</div>
           <div class="metric-value">${this.data.shortTermWinRate}%</div>
-          <div class="stat-desc">${this.data.shortTermCount} Trades</div>
+          <div class="stat-desc">${this.data.shortTermCount} 笔交易</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Medium Term (1H-1D)</div>
+          <div class="metric-label">中线 (1小时-1天)</div>
           <div class="metric-value">${this.data.mediumTermWinRate}%</div>
-          <div class="stat-desc">${this.data.mediumTermCount} Trades</div>
+          <div class="stat-desc">${this.data.mediumTermCount} 笔交易</div>
         </div>
         <div class="metric-box">
-          <div class="metric-label">Long Term (&gt;1D)</div>
+          <div class="metric-label">长线 (&gt;1天)</div>
           <div class="metric-value">${this.data.longTermWinRate}%</div>
-          <div class="stat-desc">${this.data.longTermCount} Trades</div>
+          <div class="stat-desc">${this.data.longTermCount} 笔交易</div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title">Best & Worst Trades</h2>
+      <h2 class="section-title">最佳与最差交易</h2>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
         <div class="trade-detail">
-          <div class="trade-detail-title">🏆 Best Trade</div>
+          <div class="trade-detail-title">🏆 最佳交易</div>
           <div class="trade-detail-content">
-            P&L: $${this.data.bestTrade.pnl}<br>
-            Date: ${this.data.bestTrade.date}<br>
-            Hold Time: ${this.data.bestTrade.holdTime} hours
+            盈亏: $${this.data.bestTrade.pnl}<br>
+            日期: ${this.data.bestTrade.date}<br>
+            持仓时间: ${this.data.bestTrade.holdTime} 小时
           </div>
         </div>
         <div class="trade-detail">
-          <div class="trade-detail-title">💀 Worst Trade</div>
+          <div class="trade-detail-title">💀 最差交易</div>
           <div class="trade-detail-content">
-            P&L: $${this.data.worstTrade.pnl}<br>
-            Date: ${this.data.worstTrade.date}<br>
-            Hold Time: ${this.data.worstTrade.holdTime} hours
+            盈亏: $${this.data.worstTrade.pnl}<br>
+            日期: ${this.data.worstTrade.date}<br>
+            持仓时间: ${this.data.worstTrade.holdTime} 小时
           </div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title">Time Pattern Analysis</h2>
+      <h2 class="section-title">时段模式分析</h2>
       <div class="chart-container">
-        <div class="chart-title">Hourly Win Rate</div>
+        <div class="chart-title">每小时胜率</div>
         <canvas id="timeChart"></canvas>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title">P&L Evolution</h2>
+      <h2 class="section-title">盈亏演变</h2>
       <div class="chart-container">
-        <div class="chart-title">Cumulative Profit & Loss</div>
+        <div class="chart-title">累计盈亏</div>
         <canvas id="pnlChart"></canvas>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title">Detected Problems</h2>
+      <h2 class="section-title">发现的问题</h2>
       <div class="problem-grid">
         ${this.generateProblems()}
       </div>
@@ -476,14 +476,14 @@ class VisualReport {
 
     <div class="section">
       <div class="suggestions">
-        <h3>💡 Improvement Suggestions</h3>
+        <h3>💡 改进建议</h3>
         ${this.generateSuggestions()}
       </div>
     </div>
 
     <div class="footer">
-      <p>Binance Trading Psychology Analyzer</p>
-      <p><a href="https://github.com/xj0102/binance-psychology" target="_blank">GitHub Repository</a></p>
+      <p>币安交易心理分析器</p>
+      <p><a href="https://github.com/xj0102/binance-psychology" target="_blank">GitHub 仓库</a></p>
     </div>
   </div>
 
@@ -586,12 +586,12 @@ class VisualReport {
     if (this.data.fomoCount > 0) {
       html += `
         <div class="problem-card">
-          <div class="problem-title">FOMO Detected</div>
+          <div class="problem-title">检测到 FOMO</div>
           <div class="problem-desc">
-            ${this.data.fomoCount} trades after price surge (>5%)<br>
-            Win rate: ${this.data.fomoWinRate}%<br>
-            Total loss: $${Math.abs(this.data.fomoLoss).toFixed(2)}<br>
-            Pattern: Chasing pumps, buying at peaks
+            ${this.data.fomoCount} 次在价格暴涨后追涨 (>5%)<br>
+            胜率: ${this.data.fomoWinRate}%<br>
+            总亏损: $${Math.abs(this.data.fomoLoss).toFixed(2)}<br>
+            模式: 追涨杀跌，在高点买入
           </div>
         </div>
       `;
@@ -600,12 +600,12 @@ class VisualReport {
     if (this.data.revengeCount > 0) {
       html += `
         <div class="problem-card">
-          <div class="problem-title">Revenge Trading</div>
+          <div class="problem-title">报复性交易</div>
           <div class="problem-desc">
-            ${this.data.revengeCount} trades within 30min after loss<br>
-            Win rate: ${this.data.revengeWinRate}%<br>
-            Pattern: Emotional decision making<br>
-            Trying to recover losses immediately
+            ${this.data.revengeCount} 次在亏损后 30 分钟内交易<br>
+            胜率: ${this.data.revengeWinRate}%<br>
+            模式: 情绪化决策<br>
+            试图立即挽回损失
           </div>
         </div>
       `;
@@ -614,12 +614,12 @@ class VisualReport {
     if (this.data.stopLossDiscipline === '较差' || this.data.stopLossDiscipline === '一般') {
       html += `
         <div class="problem-card">
-          <div class="problem-title">Poor Stop Loss Discipline</div>
+          <div class="problem-title">止损纪律较差</div>
           <div class="problem-desc">
-            ${this.data.bigLossCount} big losses (>5%)<br>
-            Avg stop: ${this.data.avgStopLoss}%<br>
-            Recommended: 3%<br>
-            Pattern: Holding losers too long
+            ${this.data.bigLossCount} 次大额亏损 (>5%)<br>
+            平均止损: ${this.data.avgStopLoss}%<br>
+            建议: 3%<br>
+            模式: 持有亏损仓位过久
           </div>
         </div>
       `;
@@ -628,47 +628,47 @@ class VisualReport {
     if (this.data.maxLossStreak > 5) {
       html += `
         <div class="problem-card">
-          <div class="problem-title">High Loss Streak</div>
+          <div class="problem-title">连亏次数过多</div>
           <div class="problem-desc">
-            Max consecutive losses: ${this.data.maxLossStreak}<br>
-            Pattern: Not adapting to market conditions<br>
-            Suggestion: Take a break after 3 losses
+            最大连续亏损: ${this.data.maxLossStreak} 次<br>
+            模式: 未能适应市场变化<br>
+            建议: 连亏 3 次后休息
           </div>
         </div>
       `;
     }
     
-    return html || '<div class="problem-desc" style="color: #38b2ac;">✓ No critical issues detected</div>';
+    return html || '<div class="problem-desc" style="color: #38b2ac;">✓ 未发现严重问题</div>';
   }
 
   generateSuggestions() {
     const suggestions = [];
     
     if (this.data.fomoCount > 0) {
-      suggestions.push('<div class="suggestion-item">Avoid buying after 5%+ price surge - wait for pullback</div>');
+      suggestions.push('<div class="suggestion-item">避免在价格暴涨 5% 后买入 - 等待回调</div>');
     }
     
     if (this.data.revengeCount > 0) {
-      suggestions.push('<div class="suggestion-item">Wait 1 hour after loss before next trade - cool down period</div>');
+      suggestions.push('<div class="suggestion-item">亏损后等待 1 小时再交易 - 冷静期</div>');
     }
     
     if (this.data.worstHour) {
-      suggestions.push(`<div class="suggestion-item">Avoid trading at ${this.data.worstHour}:00 - your worst performing hour</div>`);
+      suggestions.push(`<div class="suggestion-item">避免在 ${this.data.worstHour}:00 交易 - 你表现最差的时段</div>`);
     }
     
     if (parseFloat(this.data.avgStopLoss) > 5) {
-      suggestions.push('<div class="suggestion-item">Set automatic stop loss at -3% - cut losses early</div>');
+      suggestions.push('<div class="suggestion-item">设置 -3% 自动止损 - 及早止损</div>');
     }
     
     if (this.data.maxLossStreak > 5) {
-      suggestions.push('<div class="suggestion-item">Take a break after 3 consecutive losses - reset mindset</div>');
+      suggestions.push('<div class="suggestion-item">连续亏损 3 次后休息 - 重置心态</div>');
     }
     
     if (parseFloat(this.data.longTermWinRate) > parseFloat(this.data.shortTermWinRate) + 20) {
-      suggestions.push('<div class="suggestion-item">Focus on longer holding periods - your long-term trades perform better</div>');
+      suggestions.push('<div class="suggestion-item">专注长线持仓 - 你的长线交易表现更好</div>');
     }
     
-    return suggestions.join('') || '<div class="suggestion-item">Continue maintaining good trading discipline</div>';
+    return suggestions.join('') || '<div class="suggestion-item">继续保持良好的交易纪律</div>';
   }
 
   save(filename = 'report.html') {
