@@ -363,8 +363,8 @@ class VisualReport {
 <body>
   <div class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-title">${this.data.symbol}</div>
-      <div class="sidebar-subtitle">交易心理分析</div>
+      <div class="sidebar-title">交易心理分析</div>
+      <div class="sidebar-subtitle">${this.data.symbol}</div>
     </div>
     <div class="nav-menu">
       <div class="nav-item active" onclick="scrollToSection('overview')">概览</div>
@@ -380,8 +380,8 @@ class VisualReport {
 
   <div class="main-content">
     <div class="header">
-      <h1>${this.data.symbol} 交易心理分析报告</h1>
-      <p class="subtitle">深度交易分析与洞察</p>
+      <h1>交易心理深度分析</h1>
+      <p class="subtitle">${this.data.symbol} · ${this.data.totalTrades} 笔交易 · 胜率 ${this.data.winRate}%</p>
     </div>
 
     <div class="stats-grid" id="overview">
