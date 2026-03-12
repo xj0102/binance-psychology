@@ -1,0 +1,27 @@
+{
+  "name": "binance-psychology",
+  "version": "1.0.0",
+  "description": "币安交易心理分析助手 - 发现你的交易坏习惯",
+  "main": "index.js",
+  "scripts": {
+    "demo": "node demo.js",
+    "analyze": "node analyze.js",
+    "detailed": "node detailed-report.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "binance",
+    "trading",
+    "psychology",
+    "analysis",
+    "openclaw"
+  ],
+  "author": "yu",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
