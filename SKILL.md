@@ -190,9 +190,8 @@ export BINANCE_API_SECRET="your_secret"
 
 ## 作者
 
-为币安 AI 小龙虾大赛创建
-
-GitHub: https://github.com/xj0102/binance-psychology
+- GitHub: [@xj0102](https://github.com/xj0102)
+- Twitter: [@xiejin010627](https://twitter.com/xiejin010627)
 
 ## License
 

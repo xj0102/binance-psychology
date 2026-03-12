@@ -202,8 +202,6 @@ A: 基于真实交易数据，算法识别心理模式，准确率高。
 
 ## 作者
 
-为币安 AI 小龙虾大赛创建
-
 - GitHub: [@xj0102](https://github.com/xj0102)
 - Twitter: [@xiejin010627](https://twitter.com/xiejin010627)
 
