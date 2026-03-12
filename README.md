@@ -127,7 +127,7 @@ BTCUSDT 刚涨了 6.9%
 
 ### 可视化报告示例
 
-![报告示例](https://via.placeholder.com/800x600?text=Visual+Report+Example)
+![报告示例](report-screenshot.png)
 
 ## OpenClaw 集成
 
