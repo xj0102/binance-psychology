@@ -366,6 +366,37 @@ class VisualReport {
       <div class="sidebar-title">交易心理分析</div>
       <div class="sidebar-subtitle">${this.data.symbol}</div>
     </div>
+    
+    <div style="padding: 20px; border-bottom: 1px solid #e2e8f0;">
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; color: #718096; font-size: 12px; font-weight: 600; margin-bottom: 8px;">币种</label>
+        <select id="symbolSelect" onchange="changeSymbol()" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif;">
+          <option value="BTCUSDT">BTC</option>
+          <option value="ETHUSDT" selected>ETH</option>
+          <option value="BNBUSDT">BNB</option>
+          <option value="SOLUSDT">SOL</option>
+          <option value="ADAUSDT">ADA</option>
+          <option value="DOGEUSDT">DOGE</option>
+          <option value="XRPUSDT">XRP</option>
+        </select>
+      </div>
+      
+      <div>
+        <label style="display: block; color: #718096; font-size: 12px; font-weight: 600; margin-bottom: 8px;">时间范围</label>
+        <select id="daysSelect" onchange="changeDays()" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif;">
+          <option value="7">最近 7 天</option>
+          <option value="30">最近 30 天</option>
+          <option value="90">最近 90 天</option>
+          <option value="180">最近 180 天</option>
+          <option value="365" selected>最近 365 天</option>
+        </select>
+      </div>
+      
+      <button onclick="regenerate()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+        重新生成报告
+      </button>
+    </div>
+    
     <div class="nav-menu">
       <div class="nav-item active" onclick="scrollToSection('overview')">概览</div>
       <div class="nav-item" onclick="scrollToSection('psychology')">心理指标</div>
@@ -561,6 +592,27 @@ class VisualReport {
   </div>
 
   <script>
+    // 设置当前选中的币种
+    document.getElementById('symbolSelect').value = '${this.data.symbol}';
+    
+    function changeSymbol() {
+      const symbol = document.getElementById('symbolSelect').value;
+      const days = document.getElementById('daysSelect').value;
+      alert('切换到 ' + symbol + '\\n\\n请在终端运行：\\nnode generate-visual-report.js ' + symbol + ' ' + days);
+    }
+    
+    function changeDays() {
+      const symbol = document.getElementById('symbolSelect').value;
+      const days = document.getElementById('daysSelect').value;
+      alert('切换时间范围到 ' + days + ' 天\\n\\n请在终端运行：\\nnode generate-visual-report.js ' + symbol + ' ' + days);
+    }
+    
+    function regenerate() {
+      const symbol = document.getElementById('symbolSelect').value;
+      const days = document.getElementById('daysSelect').value;
+      alert('正在生成报告...\\n\\n请在终端运行：\\nnode generate-visual-report.js ' + symbol + ' ' + days);
+    }
+    
     function scrollToSection(id) {
       document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
       
