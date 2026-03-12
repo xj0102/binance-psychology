@@ -13,7 +13,7 @@ class VisualReport {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this.data.symbol} Trading Psychology Report</title>
+  <title>${this.data.symbol} 交易心理分析报告</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -21,37 +21,88 @@ class VisualReport {
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 40px 20px;
+      background: #f7fafc;
       color: #2d3748;
       line-height: 1.6;
+      display: flex;
     }
     
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
+    .sidebar {
+      width: 260px;
       background: white;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      border-right: 1px solid #e2e8f0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+    
+    .sidebar-header {
+      padding: 32px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .sidebar-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    
+    .nav-menu {
+      padding: 16px 0;
+    }
+    
+    .nav-item {
+      padding: 12px 24px;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    
+    .nav-item:hover {
+      background: #f7fafc;
+      color: #667eea;
+      border-left-color: #667eea;
+    }
+    
+    .nav-item.active {
+      background: #edf2f7;
+      color: #667eea;
+      border-left-color: #667eea;
+    }
+    
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      min-height: 100vh;
     }
     
     .header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 60px 40px;
+      padding: 48px 40px;
       color: white;
-      text-align: center;
     }
     
     h1 {
-      font-size: 42px;
+      font-size: 36px;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       letter-spacing: -0.5px;
     }
     
     .subtitle {
-      font-size: 18px;
+      font-size: 16px;
       opacity: 0.9;
       font-weight: 400;
     }
@@ -136,10 +187,14 @@ class VisualReport {
     .section {
       padding: 48px 40px;
       border-top: 1px solid #e2e8f0;
+      background: white;
+      margin: 0 40px 24px 40px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
     
     .section-title {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
       margin-bottom: 32px;
       color: #2d3748;
@@ -155,7 +210,7 @@ class VisualReport {
     }
     
     .chart-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       margin-bottom: 24px;
       color: #4a5568;
@@ -291,6 +346,7 @@ class VisualReport {
       text-align: center;
       color: #a0aec0;
       font-size: 14px;
+      margin-top: 40px;
     }
     
     .footer a {
@@ -305,13 +361,30 @@ class VisualReport {
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">${this.data.symbol}</div>
+      <div class="sidebar-subtitle">交易心理分析</div>
+    </div>
+    <div class="nav-menu">
+      <div class="nav-item active" onclick="scrollToSection('overview')">概览</div>
+      <div class="nav-item" onclick="scrollToSection('psychology')">心理指标</div>
+      <div class="nav-item" onclick="scrollToSection('holding')">持仓分析</div>
+      <div class="nav-item" onclick="scrollToSection('trades')">最佳/最差</div>
+      <div class="nav-item" onclick="scrollToSection('time')">时段分析</div>
+      <div class="nav-item" onclick="scrollToSection('pnl')">盈亏演变</div>
+      <div class="nav-item" onclick="scrollToSection('problems')">问题诊断</div>
+      <div class="nav-item" onclick="scrollToSection('suggestions')">改进建议</div>
+    </div>
+  </div>
+
+  <div class="main-content">
     <div class="header">
       <h1>${this.data.symbol} 交易心理分析报告</h1>
       <p class="subtitle">深度交易分析与洞察</p>
     </div>
 
-    <div class="stats-grid">
+    <div class="stats-grid" id="overview">
       <div class="stat-card">
         <div class="stat-label">总交易次数</div>
         <div class="stat-value">${this.data.totalTrades}</div>
@@ -370,7 +443,7 @@ class VisualReport {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="psychology">
       <h2 class="section-title">心理指标</h2>
       <div class="metrics-grid">
         <div class="metric-box">
@@ -408,7 +481,7 @@ class VisualReport {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="holding">
       <h2 class="section-title">持仓时间分析</h2>
       <div class="metrics-grid">
         <div class="metric-box">
@@ -429,7 +502,7 @@ class VisualReport {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="trades">
       <h2 class="section-title">最佳与最差交易</h2>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
         <div class="trade-detail">
@@ -451,7 +524,7 @@ class VisualReport {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="time">
       <h2 class="section-title">时段模式分析</h2>
       <div class="chart-container">
         <div class="chart-title">每小时胜率</div>
@@ -459,7 +532,7 @@ class VisualReport {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="pnl">
       <h2 class="section-title">盈亏演变</h2>
       <div class="chart-container">
         <div class="chart-title">累计盈亏</div>
@@ -467,14 +540,14 @@ class VisualReport {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="problems">
       <h2 class="section-title">发现的问题</h2>
       <div class="problem-grid">
         ${this.generateProblems()}
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="suggestions">
       <div class="suggestions">
         <h3>💡 改进建议</h3>
         ${this.generateSuggestions()}
@@ -488,6 +561,14 @@ class VisualReport {
   </div>
 
   <script>
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // 更新导航激活状态
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+    
     const timeCtx = document.getElementById('timeChart').getContext('2d');
     new Chart(timeCtx, {
       type: 'bar',
