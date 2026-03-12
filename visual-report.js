@@ -1,4 +1,4 @@
-// visual-report.js - 可视化报告生成
+// visual-report.js - 像素风可视化报告生成
 
 const fs = require('fs');
 const path = require('path');
@@ -15,166 +15,421 @@ class VisualReport {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>交易心理分析报告</title>
+  <title>交易心理分析报告 - Pixel Style</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Press Start 2P', monospace;
+      background: #0f0f23;
+      color: #00ff41;
       padding: 20px;
-      color: #333;
+      line-height: 1.8;
+      image-rendering: pixelated;
+      font-size: 10px;
     }
+    
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      background: #1a1a2e;
+      border: 4px solid #00ff41;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
     }
+    
+    .header {
+      background: linear-gradient(90deg, #0f0f23 0%, #1a1a2e 50%, #0f0f23 100%);
+      padding: 30px;
+      text-align: center;
+      border-bottom: 4px solid #00ff41;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+      animation: scan 3s infinite;
+    }
+    
+    @keyframes scan {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
     h1 {
-      text-align: center;
-      color: #667eea;
+      color: #00ff41;
+      font-size: 24px;
+      text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
       margin-bottom: 10px;
-      font-size: 2.5em;
+      letter-spacing: 2px;
     }
+    
     .subtitle {
-      text-align: center;
-      color: #999;
-      margin-bottom: 40px;
+      color: #00d4ff;
+      font-size: 10px;
+      text-shadow: 0 0 5px #00d4ff;
     }
-    .stats {
+    
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
-      margin-bottom: 40px;
+      padding: 30px;
+      background: #0f0f23;
     }
+    
     .stat-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: #1a1a2e;
+      border: 3px solid #00ff41;
       padding: 20px;
-      border-radius: 15px;
-      text-align: center;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+      transition: all 0.3s;
     }
-    .stat-value {
-      font-size: 2.5em;
-      font-weight: bold;
-      margin: 10px 0;
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0, 255, 65, 0.4);
+      border-color: #00d4ff;
     }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      background: linear-gradient(45deg, #00ff41, #00d4ff, #ff00ff, #00ff41);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .stat-card:hover::before {
+      opacity: 0.3;
+      animation: rotate 2s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+    
     .stat-label {
-      opacity: 0.9;
-      font-size: 0.9em;
+      color: #00d4ff;
+      font-size: 9px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
     }
-    .chart-container {
-      margin: 40px 0;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 15px;
-    }
-    .chart-title {
-      font-size: 1.5em;
-      margin-bottom: 20px;
-      color: #667eea;
-    }
-    .problems {
-      margin: 40px 0;
-    }
-    .problem-card {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 20px;
+    
+    .stat-value {
+      color: #00ff41;
+      font-size: 32px;
       margin: 15px 0;
-      border-radius: 10px;
+      text-shadow: 0 0 10px #00ff41;
+      font-weight: bold;
     }
-    .problem-card.high {
-      background: #f8d7da;
-      border-left-color: #dc3545;
+    
+    .stat-value.negative {
+      color: #ff0055;
+      text-shadow: 0 0 10px #ff0055;
     }
-    .suggestions {
-      background: #d1ecf1;
-      border-left: 4px solid #17a2b8;
+    
+    .stat-value.warning {
+      color: #ffaa00;
+      text-shadow: 0 0 10px #ffaa00;
+    }
+    
+    .stat-desc {
+      color: #888;
+      font-size: 8px;
+    }
+    
+    .section {
+      padding: 30px;
+      border-top: 3px solid #00ff41;
+      background: #0f0f23;
+    }
+    
+    .section-title {
+      color: #00ff41;
+      font-size: 16px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff41;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title::before {
+      content: '▶';
+      color: #00d4ff;
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    .chart-container {
+      background: #1a1a2e;
+      border: 3px solid #00ff41;
       padding: 20px;
       margin: 20px 0;
-      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
     }
+    
+    .problem-grid {
+      display: grid;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .problem-card {
+      background: #1a1a2e;
+      border-left: 5px solid #ff0055;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+      position: relative;
+    }
+    
+    .problem-card::before {
+      content: '⚠';
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: #ff0055;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    
+    .problem-title {
+      color: #ff0055;
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px #ff0055;
+    }
+    
+    .problem-desc {
+      color: #00ff41;
+      font-size: 9px;
+      line-height: 1.6;
+    }
+    
+    .suggestions {
+      background: #1a1a2e;
+      border: 3px solid #00d4ff;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+    }
+    
     .suggestions h3 {
-      color: #17a2b8;
+      color: #00d4ff;
+      font-size: 14px;
       margin-bottom: 15px;
+      text-shadow: 0 0 10px #00d4ff;
     }
-    .suggestions ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .suggestions li {
+    
+    .suggestion-item {
+      color: #00ff41;
+      font-size: 9px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .suggestions li:last-child {
+    
+    .suggestion-item::before {
+      content: '✓';
+      color: #00d4ff;
+      font-size: 14px;
+    }
+    
+    .suggestion-item:last-child {
       border-bottom: none;
     }
-    .footer {
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .metric-box {
+      background: #1a1a2e;
+      border: 2px solid #00ff41;
+      padding: 15px;
       text-align: center;
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      color: #999;
+    }
+    
+    .metric-label {
+      color: #00d4ff;
+      font-size: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .metric-value {
+      color: #00ff41;
+      font-size: 18px;
+      text-shadow: 0 0 5px #00ff41;
+    }
+    
+    .footer {
+      background: #0f0f23;
+      padding: 20px;
+      text-align: center;
+      border-top: 3px solid #00ff41;
+      color: #00d4ff;
+      font-size: 8px;
+    }
+    
+    .footer a {
+      color: #00ff41;
+      text-decoration: none;
+      text-shadow: 0 0 5px #00ff41;
+    }
+    
+    .footer a:hover {
+      color: #00d4ff;
+      text-shadow: 0 0 5px #00d4ff;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #0f0f23;
+      border: 2px solid #00ff41;
+      margin: 10px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff41, #00d4ff);
+      box-shadow: 0 0 10px #00ff41;
+      transition: width 1s ease;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🧠 交易心理分析报告</h1>
-    <p class="subtitle">基于真实交易数据的深度心理分析</p>
+    <div class="header">
+      <h1>🧠 TRADING PSYCHOLOGY REPORT</h1>
+      <p class="subtitle">PIXEL ANALYSIS SYSTEM v2.0</p>
+    </div>
 
-    <div class="stats">
+    <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">总交易</div>
+        <div class="stat-label">TOTAL TRADES</div>
         <div class="stat-value">${this.data.totalTrades}</div>
-        <div class="stat-label">笔</div>
+        <div class="stat-desc">EXECUTED ORDERS</div>
       </div>
+      
       <div class="stat-card">
-        <div class="stat-label">胜率</div>
-        <div class="stat-value">${this.data.winRate}%</div>
-        <div class="stat-label">${this.data.wins}胜 ${this.data.losses}负</div>
+        <div class="stat-label">WIN RATE</div>
+        <div class="stat-value ${parseFloat(this.data.winRate) < 30 ? 'negative' : parseFloat(this.data.winRate) < 50 ? 'warning' : ''}">${this.data.winRate}%</div>
+        <div class="stat-desc">${this.data.wins}W / ${this.data.losses}L</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${this.data.winRate}%"></div>
+        </div>
       </div>
+      
       <div class="stat-card">
-        <div class="stat-label">总盈亏</div>
-        <div class="stat-value">$${this.data.totalPnl}</div>
-        <div class="stat-label">${this.data.totalPnl >= 0 ? '盈利' : '亏损'}</div>
+        <div class="stat-label">TOTAL P&L</div>
+        <div class="stat-value ${parseFloat(this.data.totalPnl) < 0 ? 'negative' : ''}">$${this.data.totalPnl}</div>
+        <div class="stat-desc">${parseFloat(this.data.totalPnl) >= 0 ? 'PROFIT' : 'LOSS'}</div>
       </div>
+      
       <div class="stat-card">
-        <div class="stat-label">盈亏比</div>
-        <div class="stat-value">${this.data.profitFactor}</div>
-        <div class="stat-label">平均盈利/平均亏损</div>
+        <div class="stat-label">PROFIT FACTOR</div>
+        <div class="stat-value ${parseFloat(this.data.profitFactor) < 1 ? 'negative' : parseFloat(this.data.profitFactor) < 2 ? 'warning' : ''}">${this.data.profitFactor}</div>
+        <div class="stat-desc">AVG WIN / AVG LOSS</div>
       </div>
     </div>
 
-    <div class="chart-container">
-      <h3 class="chart-title">📊 时段胜率分析</h3>
-      <canvas id="timeChart"></canvas>
+    <div class="section">
+      <h2 class="section-title">ADVANCED METRICS</h2>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">FOMO TRADES</div>
+          <div class="metric-value">${this.data.fomoCount}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">REVENGE TRADES</div>
+          <div class="metric-value">${this.data.revengeCount}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">BIG LOSSES</div>
+          <div class="metric-value">${this.data.bigLossCount}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">AVG STOP LOSS</div>
+          <div class="metric-value">${this.data.avgStopLoss}%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">BEST HOUR</div>
+          <div class="metric-value">${this.data.bestHour}:00</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">WORST HOUR</div>
+          <div class="metric-value">${this.data.worstHour}:00</div>
+        </div>
+      </div>
     </div>
 
-    <div class="chart-container">
-      <h3 class="chart-title">📈 盈亏分布</h3>
-      <canvas id="pnlChart"></canvas>
+    <div class="section">
+      <h2 class="section-title">TIME PATTERN ANALYSIS</h2>
+      <div class="chart-container">
+        <canvas id="timeChart"></canvas>
+      </div>
     </div>
 
-    <div class="problems">
-      <h2 style="color: #dc3545; margin-bottom: 20px;">🔴 发现的问题</h2>
-      ${this.generateProblems()}
+    <div class="section">
+      <h2 class="section-title">P&L EVOLUTION</h2>
+      <div class="chart-container">
+        <canvas id="pnlChart"></canvas>
+      </div>
     </div>
 
-    <div class="suggestions">
-      <h3>💡 改进建议</h3>
-      <ul>
+    <div class="section">
+      <h2 class="section-title">DETECTED PROBLEMS</h2>
+      <div class="problem-grid">
+        ${this.generateProblems()}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="suggestions">
+        <h3>💡 IMPROVEMENT SUGGESTIONS</h3>
         ${this.generateSuggestions()}
-      </ul>
+      </div>
     </div>
 
     <div class="footer">
-      <p>币安交易心理分析助手</p>
-      <p>GitHub: <a href="https://github.com/xj0102/binance-psychology">xj0102/binance-psychology</a></p>
+      <p>BINANCE TRADING PSYCHOLOGY ANALYZER</p>
+      <p>GITHUB: <a href="https://github.com/xj0102/binance-psychology" target="_blank">xj0102/binance-psychology</a></p>
+      <p style="margin-top: 10px; opacity: 0.5;">POWERED BY OPENCLAW AI</p>
     </div>
   </div>
 
@@ -186,44 +441,81 @@ class VisualReport {
       data: {
         labels: ${JSON.stringify(this.data.timePattern.map(t => t.hour + ':00'))},
         datasets: [{
-          label: '胜率 (%)',
+          label: 'Win Rate (%)',
           data: ${JSON.stringify(this.data.timePattern.map(t => t.winRate))},
-          backgroundColor: ${JSON.stringify(this.data.timePattern.map(t => t.winRate > 50 ? 'rgba(75, 192, 192, 0.6)' : 'rgba(255, 99, 132, 0.6)'))},
-          borderColor: ${JSON.stringify(this.data.timePattern.map(t => t.winRate > 50 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)'))},
+          backgroundColor: ${JSON.stringify(this.data.timePattern.map(t => {
+            const rate = parseFloat(t.winRate);
+            return rate > 50 ? 'rgba(0, 255, 65, 0.6)' : rate > 30 ? 'rgba(255, 170, 0, 0.6)' : 'rgba(255, 0, 85, 0.6)';
+          }))},
+          borderColor: ${JSON.stringify(this.data.timePattern.map(t => {
+            const rate = parseFloat(t.winRate);
+            return rate > 50 ? 'rgba(0, 255, 65, 1)' : rate > 30 ? 'rgba(255, 170, 0, 1)' : 'rgba(255, 0, 85, 1)';
+          }))},
           borderWidth: 2
         }]
       },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#00ff41',
+              font: { family: 'Press Start 2P', size: 8 }
+            }
+          }
+        },
         scales: {
           y: {
             beginAtZero: true,
-            max: 100
+            max: 100,
+            ticks: { color: '#00ff41', font: { family: 'Press Start 2P', size: 8 } },
+            grid: { color: 'rgba(0, 255, 65, 0.1)' }
+          },
+          x: {
+            ticks: { color: '#00d4ff', font: { family: 'Press Start 2P', size: 8 } },
+            grid: { color: 'rgba(0, 212, 255, 0.1)' }
           }
         }
       }
     });
 
-    // 盈亏分布图
+    // 盈亏趋势图
     const pnlCtx = document.getElementById('pnlChart').getContext('2d');
     new Chart(pnlCtx, {
       type: 'line',
       data: {
-        labels: ${JSON.stringify(this.data.pnlHistory.map((_, i) => '第' + (i+1) + '笔'))},
+        labels: ${JSON.stringify(this.data.pnlHistory.map((_, i) => 'T' + (i+1)))},
         datasets: [{
-          label: '累计盈亏 ($)',
+          label: 'Cumulative P&L ($)',
           data: ${JSON.stringify(this.data.pnlHistory)},
-          borderColor: 'rgba(102, 126, 234, 1)',
-          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          borderColor: '#00ff41',
+          backgroundColor: 'rgba(0, 255, 65, 0.1)',
           fill: true,
-          tension: 0.4
+          tension: 0.4,
+          borderWidth: 2,
+          pointBackgroundColor: '#00d4ff',
+          pointBorderColor: '#00ff41',
+          pointRadius: 3
         }]
       },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#00ff41',
+              font: { family: 'Press Start 2P', size: 8 }
+            }
+          }
+        },
         scales: {
           y: {
-            beginAtZero: false
+            ticks: { color: '#00ff41', font: { family: 'Press Start 2P', size: 8 } },
+            grid: { color: 'rgba(0, 255, 65, 0.1)' }
+          },
+          x: {
+            ticks: { color: '#00d4ff', font: { family: 'Press Start 2P', size: 8 } },
+            grid: { color: 'rgba(0, 212, 255, 0.1)' }
           }
         }
       }
@@ -240,56 +532,66 @@ class VisualReport {
     
     if (this.data.fomoCount > 0) {
       html += `
-        <div class="problem-card high">
-          <h4>🔴 FOMO（追涨）</h4>
-          <p>${this.data.fomoCount} 次在暴涨后追涨，胜率 ${this.data.fomoWinRate}%</p>
-          <p>总亏损: $${Math.abs(this.data.fomoLoss).toFixed(2)}</p>
+        <div class="problem-card">
+          <div class="problem-title">FOMO DETECTED</div>
+          <div class="problem-desc">
+            ${this.data.fomoCount} trades after price surge<br>
+            Win rate: ${this.data.fomoWinRate}%<br>
+            Total loss: $${Math.abs(this.data.fomoLoss).toFixed(2)}
+          </div>
         </div>
       `;
     }
     
     if (this.data.revengeCount > 0) {
       html += `
-        <div class="problem-card high">
-          <h4>🔴 报复性交易</h4>
-          <p>${this.data.revengeCount} 次亏损后立即加仓，胜率 ${this.data.revengeWinRate}%</p>
+        <div class="problem-card">
+          <div class="problem-title">REVENGE TRADING</div>
+          <div class="problem-desc">
+            ${this.data.revengeCount} trades after loss<br>
+            Win rate: ${this.data.revengeWinRate}%<br>
+            Pattern: Emotional decision making
+          </div>
         </div>
       `;
     }
     
-    if (this.data.stopLossDiscipline === '较差') {
+    if (this.data.stopLossDiscipline === '较差' || this.data.stopLossDiscipline === '一般') {
       html += `
-        <div class="problem-card high">
-          <h4>🔴 止损纪律较差</h4>
-          <p>${this.data.bigLossCount} 次亏损超过 5%</p>
-          <p>平均止损点: ${this.data.avgStopLoss}%（建议 3%）</p>
+        <div class="problem-card">
+          <div class="problem-title">POOR STOP LOSS</div>
+          <div class="problem-desc">
+            ${this.data.bigLossCount} big losses (>5%)<br>
+            Avg stop: ${this.data.avgStopLoss}%<br>
+            Recommended: 3%
+          </div>
         </div>
       `;
     }
     
-    return html || '<p>✅ 未发现明显问题</p>';
+    return html || '<div class="problem-desc" style="color: #00ff41;">✓ NO CRITICAL ISSUES DETECTED</div>';
   }
 
   generateSuggestions() {
     const suggestions = [];
     
     if (this.data.fomoCount > 0) {
-      suggestions.push('<li>✅ 避免追涨：价格 1 小时涨幅 > 5% 时等待回调</li>');
+      suggestions.push('<div class="suggestion-item">Avoid buying after 5%+ price surge</div>');
     }
     
     if (this.data.revengeCount > 0) {
-      suggestions.push('<li>✅ 亏损后休息：强制休息 1 小时再交易</li>');
+      suggestions.push('<div class="suggestion-item">Wait 1 hour after loss before trading</div>');
     }
     
     if (this.data.worstHour) {
-      suggestions.push(`<li>✅ 调整时段：避开 ${this.data.worstHour}:00，多在 ${this.data.bestHour}:00 交易</li>`);
+      suggestions.push(`<div class="suggestion-item">Avoid trading at ${this.data.worstHour}:00</div>`);
     }
     
     if (parseFloat(this.data.avgStopLoss) > 5) {
-      suggestions.push('<li>✅ 严格止损：设置 -3% 自动止损</li>');
+      suggestions.push('<div class="suggestion-item">Set automatic stop loss at -3%</div>');
     }
     
-    return suggestions.join('') || '<li>继续保持良好的交易纪律</li>';
+    return suggestions.join('') || '<div class="suggestion-item">Continue maintaining good discipline</div>';
   }
 
   save(filename = 'report.html') {
