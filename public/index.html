@@ -465,6 +465,42 @@
           <p id="riskLevel" style="color: #B7BDC6; margin-top: 12px; font-size: 14px;"></p>
         </div>
         
+        <!-- 对比分析 -->
+        <div style="background: #1E2329; padding: 32px; border-radius: 16px; margin: 32px 0; border: 1px solid #2B3139;">
+          <h3 style="color: #F0B90B; font-size: 20px; margin-bottom: 24px;">📊 你 vs 市场平均</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div style="text-align: center;">
+              <div style="color: #B7BDC6; font-size: 12px; margin-bottom: 8px;">胜率</div>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <div id="yourWinRate" style="font-size: 32px; font-weight: 700; color: #F0B90B;">0%</div>
+                <div style="color: #707A8A;">vs</div>
+                <div style="font-size: 24px; font-weight: 600; color: #B7BDC6;">45%</div>
+              </div>
+              <div id="winRateCompare" style="color: #B7BDC6; font-size: 12px; margin-top: 8px;"></div>
+            </div>
+            
+            <div style="text-align: center;">
+              <div style="color: #B7BDC6; font-size: 12px; margin-bottom: 8px;">盈亏比</div>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <div id="yourProfitFactor" style="font-size: 32px; font-weight: 700; color: #F0B90B;">0</div>
+                <div style="color: #707A8A;">vs</div>
+                <div style="font-size: 24px; font-weight: 600; color: #B7BDC6;">1.5</div>
+              </div>
+              <div id="profitFactorCompare" style="color: #B7BDC6; font-size: 12px; margin-top: 8px;"></div>
+            </div>
+            
+            <div style="text-align: center;">
+              <div style="color: #B7BDC6; font-size: 12px; margin-bottom: 8px;">FOMO 频率</div>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <div id="yourFomoRate" style="font-size: 32px; font-weight: 700; color: #F0B90B;">0%</div>
+                <div style="color: #707A8A;">vs</div>
+                <div style="font-size: 24px; font-weight: 600; color: #B7BDC6;">15%</div>
+              </div>
+              <div id="fomoRateCompare" style="color: #B7BDC6; font-size: 12px; margin-top: 8px;"></div>
+            </div>
+          </div>
+        </div>
+        
         <!-- 图表区域 -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0;">
           <div style="background: #1E2329; padding: 24px; border-radius: 16px; border: 1px solid #2B3139;">
@@ -606,6 +642,43 @@
           riskScore.style.color = '#F6465D';
         }
       }, 100);
+      
+      // 对比分析
+      const yourWinRate = parseFloat(data.winRate);
+      const marketAvgWinRate = 45;
+      document.getElementById('yourWinRate').textContent = yourWinRate.toFixed(1) + '%';
+      document.getElementById('yourWinRate').style.color = yourWinRate >= marketAvgWinRate ? '#0ECB81' : '#F6465D';
+      
+      const winRateDiff = yourWinRate - marketAvgWinRate;
+      document.getElementById('winRateCompare').textContent = 
+        winRateDiff >= 0 
+          ? `高于平均 ${winRateDiff.toFixed(1)}%` 
+          : `低于平均 ${Math.abs(winRateDiff).toFixed(1)}%`;
+      document.getElementById('winRateCompare').style.color = winRateDiff >= 0 ? '#0ECB81' : '#F6465D';
+      
+      const yourProfitFactor = parseFloat(data.profitFactor);
+      const marketAvgProfitFactor = 1.5;
+      document.getElementById('yourProfitFactor').textContent = yourProfitFactor.toFixed(2);
+      document.getElementById('yourProfitFactor').style.color = yourProfitFactor >= marketAvgProfitFactor ? '#0ECB81' : '#F6465D';
+      
+      const profitFactorDiff = yourProfitFactor - marketAvgProfitFactor;
+      document.getElementById('profitFactorCompare').textContent = 
+        profitFactorDiff >= 0 
+          ? `高于平均 ${profitFactorDiff.toFixed(2)}` 
+          : `低于平均 ${Math.abs(profitFactorDiff).toFixed(2)}`;
+      document.getElementById('profitFactorCompare').style.color = profitFactorDiff >= 0 ? '#0ECB81' : '#F6465D';
+      
+      const yourFomoRate = data.totalTrades > 0 ? (data.fomoCount / data.totalTrades * 100) : 0;
+      const marketAvgFomoRate = 15;
+      document.getElementById('yourFomoRate').textContent = yourFomoRate.toFixed(1) + '%';
+      document.getElementById('yourFomoRate').style.color = yourFomoRate <= marketAvgFomoRate ? '#0ECB81' : '#F6465D';
+      
+      const fomoRateDiff = yourFomoRate - marketAvgFomoRate;
+      document.getElementById('fomoRateCompare').textContent = 
+        fomoRateDiff <= 0 
+          ? `低于平均 ${Math.abs(fomoRateDiff).toFixed(1)}%` 
+          : `高于平均 ${fomoRateDiff.toFixed(1)}%`;
+      document.getElementById('fomoRateCompare').style.color = fomoRateDiff <= 0 ? '#0ECB81' : '#F6465D';
       
       // 绘制时段图表
       if (data.timePattern) {
@@ -758,12 +831,167 @@
       // 显示结果
       document.getElementById('results').classList.add('show');
       
+      // 保存到历史记录
+      saveToHistory(data);
+      
       // 保存数据用于导出
       window.currentAnalysis = data;
     }
     
+    function saveToHistory(data) {
+      const history = JSON.parse(localStorage.getItem('analysisHistory') || '[]');
+      
+      const record = {
+        symbol: document.getElementById('symbol').value,
+        days: document.getElementById('days').value,
+        timestamp: Date.now(),
+        data: {
+          totalTrades: data.totalTrades,
+          winRate: data.winRate,
+          totalPnl: data.totalPnl,
+          profitFactor: data.profitFactor,
+          riskScore: Math.round(parseFloat(document.getElementById('riskScore').textContent))
+        }
+      };
+      
+      history.unshift(record);
+      
+      // 只保留最近 10 条
+      if (history.length > 10) {
+        history.length = 10;
+      }
+      
+      localStorage.setItem('analysisHistory', JSON.stringify(history));
+      updateHistoryDisplay();
+    }
+    
+    function updateHistoryDisplay() {
+      const history = JSON.parse(localStorage.getItem('analysisHistory') || '[]');
+      
+      if (history.length === 0) return;
+      
+      let historyHtml = '<div style="background: #1E2329; padding: 32px; border-radius: 16px; margin: 32px 0; border: 1px solid #2B3139;">';
+      historyHtml += '<h3 style="color: #F0B90B; font-size: 20px; margin-bottom: 24px;">📜 历史记录</h3>';
+      
+      history.forEach((record, index) => {
+        const date = new Date(record.timestamp).toLocaleString('zh-CN');
+        historyHtml += `
+          <div style="background: #0B0E11; padding: 20px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="color: #F0B90B; font-weight: 600; margin-bottom: 4px;">${record.symbol} · ${record.days} 天</div>
+              <div style="color: #B7BDC6; font-size: 14px;">${date}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="color: #EAECEF; font-size: 18px; font-weight: 600;">评分: ${record.data.riskScore}</div>
+              <div style="color: #B7BDC6; font-size: 14px;">胜率: ${record.data.winRate}%</div>
+            </div>
+          </div>
+        `;
+      });
+      
+      historyHtml += '</div>';
+      
+      const results = document.getElementById('results');
+      if (!document.getElementById('historySection')) {
+        const historyDiv = document.createElement('div');
+        historyDiv.id = 'historySection';
+        historyDiv.innerHTML = historyHtml;
+        results.appendChild(historyDiv);
+      }
+    }
+    
     function exportPDF() {
-      alert('PDF 导出功能开发中...\n\n当前可以截图保存报告');
+      const data = window.currentAnalysis;
+      if (!data) {
+        alert('没有可导出的数据');
+        return;
+      }
+      
+      // 生成 PDF 内容（使用 window.print）
+      const printWindow = window.open('', '_blank');
+      const symbol = document.getElementById('symbol').value;
+      const days = document.getElementById('days').value;
+      
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>交易心理分析报告 - ${symbol}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            h1 { color: #F0B90B; }
+            .stat { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
+            .stat-label { color: #666; font-size: 14px; }
+            .stat-value { font-size: 24px; font-weight: bold; color: #333; }
+            .problem { margin: 15px 0; padding: 15px; background: #fff5f5; border-left: 4px solid #F6465D; }
+            .suggestion { margin: 15px 0; padding: 15px; background: #f0fdf4; border-left: 4px solid #0ECB81; }
+          </style>
+        </head>
+        <body>
+          <h1>🏆 Binance 交易心理分析报告</h1>
+          <p><strong>交易对:</strong> ${symbol} | <strong>时间范围:</strong> ${days} 天</p>
+          <p><strong>生成时间:</strong> ${new Date().toLocaleString('zh-CN')}</p>
+          
+          <h2>📊 核心数据</h2>
+          <div class="stat">
+            <div class="stat-label">总交易次数</div>
+            <div class="stat-value">${data.totalTrades}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">胜率</div>
+            <div class="stat-value">${data.winRate}%</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">总盈亏</div>
+            <div class="stat-value">$${data.totalPnl}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">盈亏比</div>
+            <div class="stat-value">${data.profitFactor}</div>
+          </div>
+          
+          <h2>🔴 发现的问题</h2>
+          ${data.fomoCount > 0 ? `
+            <div class="problem">
+              <strong>FOMO 追涨</strong><br>
+              检测到 ${data.fomoCount} 次在价格暴涨后追涨<br>
+              胜率: ${data.fomoWinRate}%
+            </div>
+          ` : ''}
+          ${data.revengeCount > 0 ? `
+            <div class="problem">
+              <strong>报复性交易</strong><br>
+              检测到 ${data.revengeCount} 次在亏损后 30 分钟内交易<br>
+              胜率: ${data.revengeWinRate}%
+            </div>
+          ` : ''}
+          ${data.bigLossCount > 5 ? `
+            <div class="problem">
+              <strong>止损纪律较差</strong><br>
+              ${data.bigLossCount} 次大额亏损 (>5%)<br>
+              平均止损: ${data.avgStopLoss}%
+            </div>
+          ` : ''}
+          
+          <h2>💡 改进建议</h2>
+          ${data.fomoCount > 0 ? '<div class="suggestion">避免在价格暴涨 5% 后买入 - 等待回调</div>' : ''}
+          ${data.revengeCount > 0 ? '<div class="suggestion">亏损后等待 1 小时再交易 - 冷静期</div>' : ''}
+          ${parseFloat(data.avgStopLoss) > 5 ? '<div class="suggestion">设置 -3% 自动止损 - 及早止损</div>' : ''}
+          
+          <hr style="margin: 40px 0;">
+          <p style="text-align: center; color: #666;">
+            Generated by Binance Trading Psychology Coach<br>
+            <a href="https://github.com/xj0102/binance-psychology">github.com/xj0102/binance-psychology</a>
+          </p>
+        </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
     }
     
     let monitoringWs = null;
