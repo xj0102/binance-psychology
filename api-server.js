@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3456;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // API: 分析交易心理
 app.post('/api/analyze', async (req, res) => {
@@ -130,3 +130,6 @@ app.listen(PORT, () => {
 ╚════════════════════════════════════════════════════════╝
   `);
 });
+
+// Vercel 导出
+module.exports = app;
