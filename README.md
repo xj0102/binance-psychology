@@ -71,16 +71,6 @@ node api-server.js
 
 在浏览器中打开：http://localhost:3456
 
-## 📸 截图
-
-![主界面](screenshots/hero.png)
-![分析结果](screenshots/analysis.png)
-![实时监控](screenshots/monitoring.png)
-
-## 🎥 Demo 视频
-
-[观看 Demo 视频](https://youtu.be/xxx)
-
 ## 🛠️ 技术栈
 
 - **前端**: HTML5, CSS3, JavaScript, Chart.js
