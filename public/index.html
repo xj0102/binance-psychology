@@ -365,6 +365,12 @@
     <h2 class="section-title">为什么需要交易心理分析？</h2>
     <div class="features">
       <div class="feature-card">
+        <div class="feature-icon">🚨</div>
+        <h3 class="feature-title">实时预警</h3>
+        <p class="feature-desc">交易前实时提醒，防止 FOMO 和报复性交易</p>
+      </div>
+      
+      <div class="feature-card">
         <div class="feature-icon">🧠</div>
         <h3 class="feature-title">FOMO 检测</h3>
         <p class="feature-desc">识别你在价格暴涨后追涨的行为，帮你避免高位接盘</p>
@@ -476,9 +482,24 @@
         <div class="suggestions" id="suggestions"></div>
         
         <!-- 导出按钮 -->
-        <div style="margin-top: 32px; text-align: center;">
+        <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center;">
+          <button onclick="startMonitoring()" id="monitorBtn" style="padding: 14px 32px; background: linear-gradient(135deg, #F0B90B 0%, #F8D12F 100%); color: #0B0E11; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+            🚨 启动实时监控
+          </button>
           <button onclick="exportPDF()" style="padding: 14px 32px; background: #1E2329; color: #F0B90B; border: 1px solid #F0B90B; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
             📄 导出 PDF 报告
+          </button>
+        </div>
+        
+        <!-- 实时监控面板 -->
+        <div id="monitorPanel" style="display: none; margin-top: 32px; background: #1E2329; padding: 32px; border-radius: 16px; border: 1px solid #2B3139;">
+          <h3 style="color: #F0B90B; font-size: 20px; margin-bottom: 16px;">🚨 实时监控中...</h3>
+          <div style="color: #B7BDC6; margin-bottom: 16px;">
+            正在监控 <span id="monitorSymbol" style="color: #F0B90B; font-weight: 600;"></span> 的价格变化和交易行为
+          </div>
+          <div id="alertsList" style="max-height: 400px; overflow-y: auto;"></div>
+          <button onclick="stopMonitoring()" style="margin-top: 16px; padding: 12px 24px; background: #F6465D; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+            停止监控
           </button>
         </div>
       </div>
@@ -743,6 +764,103 @@
     
     function exportPDF() {
       alert('PDF 导出功能开发中...\n\n当前可以截图保存报告');
+    }
+    
+    let monitoringWs = null;
+    let priceHistory = [];
+    
+    function startMonitoring() {
+      const symbol = document.getElementById('symbol').value;
+      const monitorPanel = document.getElementById('monitorPanel');
+      const monitorSymbol = document.getElementById('monitorSymbol');
+      const monitorBtn = document.getElementById('monitorBtn');
+      
+      monitorPanel.style.display = 'block';
+      monitorSymbol.textContent = symbol;
+      monitorBtn.disabled = true;
+      
+      // 连接 WebSocket
+      const wsUrl = `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`;
+      monitoringWs = new WebSocket(wsUrl);
+      
+      monitoringWs.onopen = () => {
+        addAlert('success', '✅ 监控已启动', '正在实时监控价格变化...');
+      };
+      
+      monitoringWs.onmessage = (event) => {
+        const trade = JSON.parse(event.data);
+        const price = parseFloat(trade.p);
+        
+        priceHistory.push({ price, time: Date.now() });
+        
+        // 只保留最近 1 小时
+        const oneHourAgo = Date.now() - 3600000;
+        priceHistory = priceHistory.filter(p => p.time > oneHourAgo);
+        
+        // 检查 FOMO
+        if (priceHistory.length >= 2) {
+          const oldPrice = priceHistory[0].price;
+          const priceChange = ((price - oldPrice) / oldPrice) * 100;
+          
+          if (priceChange > 5) {
+            const data = window.currentAnalysis;
+            addAlert('warning', '🚨 FOMO 警告！', 
+              `${symbol} 刚涨了 ${priceChange.toFixed(1)}%<br><br>` +
+              `你历史上有 ${data.fomoCount} 次 FOMO，胜率 ${data.fomoWinRate}%<br><br>` +
+              `建议：等待回调再买入`
+            );
+            
+            // 清空历史，避免重复警告
+            priceHistory = [];
+          }
+        }
+      };
+      
+      monitoringWs.onerror = () => {
+        addAlert('error', '❌ 连接失败', '无法连接到 Binance WebSocket');
+      };
+    }
+    
+    function stopMonitoring() {
+      if (monitoringWs) {
+        monitoringWs.close();
+        monitoringWs = null;
+      }
+      
+      document.getElementById('monitorPanel').style.display = 'none';
+      document.getElementById('monitorBtn').disabled = false;
+      priceHistory = [];
+    }
+    
+    function addAlert(type, title, message) {
+      const alertsList = document.getElementById('alertsList');
+      const colors = {
+        success: '#0ECB81',
+        warning: '#F8D12F',
+        error: '#F6465D'
+      };
+      
+      const alert = document.createElement('div');
+      alert.style.cssText = `
+        background: rgba(${type === 'success' ? '14, 203, 129' : type === 'warning' ? '248, 209, 47' : '246, 70, 93'}, 0.1);
+        border-left: 4px solid ${colors[type]};
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      `;
+      
+      alert.innerHTML = `
+        <div style="color: ${colors[type]}; font-weight: 700; margin-bottom: 4px;">${title}</div>
+        <div style="color: #B7BDC6; font-size: 14px;">${message}</div>
+        <div style="color: #707A8A; font-size: 12px; margin-top: 8px;">${new Date().toLocaleTimeString()}</div>
+      `;
+      
+      alertsList.insertBefore(alert, alertsList.firstChild);
+      
+      // 只保留最近 10 条
+      while (alertsList.children.length > 10) {
+        alertsList.removeChild(alertsList.lastChild);
+      }
     }
   </script>
 </body>
