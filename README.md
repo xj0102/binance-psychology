@@ -8,6 +8,13 @@
 
 **🏆 Build with Binance 2025 参赛项目**
 
+## 🌐 在线 Demo
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/xj0102/binance-psychology)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/binance-psychology)
+
+点击上方按钮一键部署！
+
 ## 🎯 项目简介
 
 Binance Trading Psychology Coach 是一个基于 AI 的交易心理分析工具，**原生集成 OpenClaw（龙虾）**，通过对话式交互分析你的历史交易数据，识别心理问题（FOMO、报复性交易、止损纪律等），并提供个性化的改进建议和实时预警。

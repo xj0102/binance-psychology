@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: binance-psychology
+    env: node
+    buildCommand: npm install
+    startCommand: node api-server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
