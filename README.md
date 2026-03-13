@@ -58,24 +58,29 @@ export BINANCE_API_SECRET="your_secret"
 
 ### 使用
 
-**快速分析：**
+**方式 1：Web 界面（推荐）**
 ```bash
+# 启动服务器
+node server.js
+
+# 在浏览器打开 http://localhost:3456
+# 选择币种和时间，点击生成报告
+# 可以在报告页面直接切换币种和时间
+```
+
+**方式 2：命令行**
+```bash
+# 快速分析
 node analyze.js BTCUSDT 30
-```
 
-**详细报告：**
-```bash
+# 详细报告
 node detailed-report.js ETHUSDT 365
-```
 
-**实时监控：**
-```bash
-node realtime-monitor.js
-```
-
-**可视化报告：**
-```bash
+# 可视化报告
 node generate-visual-report.js ETHUSDT 365
+
+# 扫描所有币种
+node analyze-all.js 365
 ```
 
 **演示模式（无需 API）：**

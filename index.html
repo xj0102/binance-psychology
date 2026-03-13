@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>现货交易心理分析</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 48px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      color: #4a5568;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    select {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+    }
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .loading {
+      text-align: center;
+      color: #667eea;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    #reportFrame {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>现货交易心理分析</h1>
+    <p class="subtitle">选择币种和时间范围</p>
+    
+    <div class="form-group">
+      <label>币种</label>
+      <select id="symbol">
+        <option value="BTCUSDT">BTC (比特币)</option>
+        <option value="ETHUSDT">ETH (以太坊)</option>
+        <option value="BNBUSDT">BNB (币安币)</option>
+        <option value="SOLUSDT">SOL (Solana)</option>
+        <option value="ADAUSDT">ADA (Cardano)</option>
+        <option value="DOGEUSDT">DOGE (狗狗币)</option>
+        <option value="XRPUSDT">XRP (瑞波币)</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>时间范围</label>
+      <select id="days">
+        <option value="7">最近 7 天</option>
+        <option value="30">最近 30 天</option>
+        <option value="90">最近 90 天</option>
+        <option value="180">最近 180 天</option>
+        <option value="365" selected>最近 365 天</option>
+      </select>
+    </div>
+    
+    <button onclick="generateReport()" id="generateBtn">
+      生成报告
+    </button>
+    
+    <div id="loading" class="loading" style="display: none;">
+      正在生成报告，请稍候...
+    </div>
+  </div>
+  
+  <iframe id="reportFrame"></iframe>
+  
+  <script>
+    async function generateReport() {
+      const symbol = document.getElementById('symbol').value;
+      const days = document.getElementById('days').value;
+      const btn = document.getElementById('generateBtn');
+      const loading = document.getElementById('loading');
+      const frame = document.getElementById('reportFrame');
+      
+      btn.disabled = true;
+      loading.style.display = 'block';
+      
+      try {
+        const response = await fetch(`/api/generate?symbol=${symbol}&days=${days}`);
+        
+        if (!response.ok) {
+          throw new Error('生成失败');
+        }
+        
+        const html = await response.text();
+        
+        // 在 iframe 中显示报告
+        frame.srcdoc = html;
+        frame.style.display = 'block';
+        
+      } catch (e) {
+        alert('生成报告失败: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

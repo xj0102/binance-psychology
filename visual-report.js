@@ -598,19 +598,36 @@ class VisualReport {
     function changeSymbol() {
       const symbol = document.getElementById('symbolSelect').value;
       const days = document.getElementById('daysSelect').value;
-      alert('切换到 ' + symbol + '\\n\\n请在终端运行：\\nnode generate-visual-report.js ' + symbol + ' ' + days);
+      regenerate();
     }
     
     function changeDays() {
       const symbol = document.getElementById('symbolSelect').value;
       const days = document.getElementById('daysSelect').value;
-      alert('切换时间范围到 ' + days + ' 天\\n\\n请在终端运行：\\nnode generate-visual-report.js ' + symbol + ' ' + days);
+      regenerate();
     }
     
-    function regenerate() {
+    async function regenerate() {
       const symbol = document.getElementById('symbolSelect').value;
       const days = document.getElementById('daysSelect').value;
-      alert('正在生成报告...\\n\\n请在终端运行：\\nnode generate-visual-report.js ' + symbol + ' ' + days);
+      
+      // 显示加载提示
+      document.body.style.opacity = '0.5';
+      document.body.style.pointerEvents = 'none';
+      
+      try {
+        const response = await fetch(\`http://localhost:3456/api/generate?symbol=\${symbol}&days=\${days}\`);
+        if (!response.ok) throw new Error('生成失败');
+        
+        const html = await response.text();
+        document.open();
+        document.write(html);
+        document.close();
+      } catch (e) {
+        alert('生成报告失败: ' + e.message + '\\n\\n请确保服务器正在运行：\\nnode server.js');
+        document.body.style.opacity = '1';
+        document.body.style.pointerEvents = 'auto';
+      }
     }
     
     function scrollToSection(id) {
