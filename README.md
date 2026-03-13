@@ -10,10 +10,10 @@
 
 ## 🌐 在线 Demo
 
+**立即体验：** https://binance-psychology.vercel.app/
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/xj0102/binance-psychology)
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/binance-psychology)
-
-点击上方按钮一键部署！
 
 ## 🎯 项目简介
 
