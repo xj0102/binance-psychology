@@ -1,0 +1,65 @@
+// demo-mode.html - Demo 模式（无需 API）
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Demo Mode - Binance Trading Psychology Coach</title>
+  <script>
+    // 模拟分析结果
+    const mockData = {
+      totalTrades: 17,
+      winRate: '11.8',
+      totalPnl: '-412.42',
+      profitFactor: '0.01',
+      avgWin: '0.04',
+      avgLoss: '-29.11',
+      fomoCount: 0,
+      fomoWinRate: '0',
+      fomoLoss: 0,
+      revengeCount: 4,
+      revengeWinRate: '25',
+      bigLossCount: 14,
+      avgStopLoss: '26.2',
+      timePattern: [
+        {hour: 22, winRate: '0', count: 5},
+        {hour: 23, winRate: '8', count: 12}
+      ],
+      shortTermCount: 5,
+      mediumTermCount: 8,
+      longTermCount: 4
+    };
+    
+    // 页面加载后自动填充并分析
+    window.onload = function() {
+      setTimeout(() => {
+        document.getElementById('apiKey').value = 'DEMO_MODE';
+        document.getElementById('apiSecret').value = 'DEMO_MODE';
+        document.getElementById('symbol').value = 'ETHUSDT';
+        document.getElementById('days').value = '365';
+        
+        setTimeout(() => {
+          // 模拟点击分析
+          document.querySelector('.analyze-button').click();
+          
+          // 模拟分析过程
+          document.getElementById('loading').classList.add('show');
+          
+          setTimeout(() => {
+            document.getElementById('loading').classList.remove('show');
+            displayResults(mockData);
+          }, 2000);
+        }, 1000);
+      }, 500);
+    };
+  </script>
+</head>
+<body>
+  <h1>Demo Mode</h1>
+  <p>This page will automatically demonstrate the analysis process.</p>
+  <p>Redirecting to main app...</p>
+  <script>
+    window.location.href = 'https://binance-psychology.vercel.app/';
+  </script>
+</body>
+</html>
